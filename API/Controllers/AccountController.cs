@@ -36,7 +36,8 @@ namespace API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserExists(registerDto.UserName, registerDto.Email)) return BadRequest("User already exists");
+            var userexists = await UserExists(registerDto.UserName, registerDto.Email);
+            if (userexists.Result) return BadRequest(userexists.Message);
 
             var user = _mapper.Map<IdentityUser>(registerDto);
 
@@ -62,7 +63,7 @@ namespace API.Controllers
             var result = await _signInManager
             .CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized();
+            if (!result.Succeeded) return Unauthorized("Invalid password");
 
             return new UserDto
             {
@@ -71,11 +72,15 @@ namespace API.Controllers
             };
         }
 
-        private async Task<bool> UserExists(string username, string email)
+        private async Task<ValidationResponse> UserExists(string username, string email)
         {
-            bool uniqueUserName = await _userManager.FindByNameAsync(username.ToLower()) != null;
-            bool uniqueEmail = await _userManager.FindByEmailAsync(email.ToLower()) != null;
-            return uniqueUserName || uniqueEmail;
+            bool uniqueUserName = await _userManager.FindByNameAsync(username.ToLower()) == null;
+            bool uniqueEmail = await _userManager.FindByEmailAsync(email.ToLower()) == null;
+            return new ValidationResponse()
+            {
+                Result = !uniqueUserName || uniqueEmail,
+                Message = !uniqueUserName ? "Username is already taken" : !uniqueEmail ? "Email is already taken" : ""
+            };
         }
 
         // private async Task<bool> PasswordExists(string username, string email)
@@ -83,5 +88,11 @@ namespace API.Controllers
         //     return await _userManager.getu
         // }
         
+    }
+
+    public class ValidationResponse
+    {
+        public bool Result { get; set; }
+        public string Message { get; set; }
     }
 }
