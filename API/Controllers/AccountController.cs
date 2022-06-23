@@ -63,7 +63,7 @@ namespace API.Controllers
             var result = await _signInManager
             .CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized("Invalid password");
+            if (!result.Succeeded) return Unauthorized();
 
             return new UserDto
             {

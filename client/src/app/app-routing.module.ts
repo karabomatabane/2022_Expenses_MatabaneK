@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ContactComponent } from './contact/contact.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
+import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { ExpenseDetailComponent } from './expenses/expense-detail/expense-detail.component';
 import { ExpenseListComponent } from './expenses/expense-list/expense-list.component';
 import { HomeComponent } from './home/home.component';
@@ -20,7 +22,9 @@ const routes: Routes = [
   },
   {path: 'contact', component: ContactComponent},
   {path: 'disclaimer', component: DisclaimerComponent},
-  {path: '**', component: HomeComponent, pathMatch:'full'}
+  {path: 'not-found', component: NotFoundComponent},
+  {path: 'server-error', component: ServerErrorComponent},
+  {path: '**', component: NotFoundComponent, pathMatch:'full'}
 ];
 
 @NgModule({
