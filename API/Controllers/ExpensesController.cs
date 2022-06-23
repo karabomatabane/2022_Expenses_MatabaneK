@@ -53,7 +53,8 @@ namespace API.Controllers
             {
                 Date = _expense.Date,
                 UserName = username,
-                Description = _expense.Description
+                Description = _expense.Description,
+                Amount = _expense.Amount
             };
 
             _expenseRepository.Add(expense);

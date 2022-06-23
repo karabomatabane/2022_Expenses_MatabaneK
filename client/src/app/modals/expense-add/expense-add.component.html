@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Add a new expense.</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addForm" id="expenseForm" class="mt-4" (ngSubmit)="addExpense()">
+        <h4>Date</h4>
+        <textarea class="form-control"  formControlName="date" rows="6"></textarea>
+        <h4 class="mt-2">Description</h4>
+        <textarea class="form-control" formControlName="description" rows="6"></textarea>
+        <h4 class="mt-2">Amount</h4>
+        <textarea class="form-control" formControlName="amount" rows="6"></textarea>
+    </form>
+
+    <p>Form value:{{addForm.value | json}}</p>
+    <p>Form status:{{addForm.status | json}}</p>
+  </div>
+  <div class="modal-footer mt-4">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
+    <button type="button" class="btn btn-success" (click)="addExpense()">Submit</button>
+  </div>

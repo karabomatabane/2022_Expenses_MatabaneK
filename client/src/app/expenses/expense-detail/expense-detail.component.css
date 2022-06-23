@@ -1,0 +1,10 @@
+.card-body {
+    padding: 0 25px;
+    margin: auto 0;
+}
+
+.card-footer {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-top: none;
+}

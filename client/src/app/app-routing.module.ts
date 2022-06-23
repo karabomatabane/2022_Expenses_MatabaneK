@@ -7,7 +7,9 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { ExpenseDetailComponent } from './expenses/expense-detail/expense-detail.component';
 import { ExpenseListComponent } from './expenses/expense-list/expense-list.component';
 import { HomeComponent } from './home/home.component';
+import { ExpenseEditComponent } from './modals/expense-edit/expense-edit.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -18,6 +20,7 @@ const routes: Routes = [
     children: [
       {path: 'expenses', component: ExpenseListComponent},
       {path: 'expenses/:id', component: ExpenseDetailComponent},
+      {path: 'expense/edit', component: ExpenseEditComponent, canDeactivate: [PreventUnsavedChangesGuard]},
     ]
   },
   {path: 'contact', component: ContactComponent},

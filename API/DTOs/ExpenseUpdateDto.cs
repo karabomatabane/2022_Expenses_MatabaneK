@@ -7,6 +7,9 @@ namespace API.DTOs
     {
         [Required]
         public DateTime Date { get; set; } = DateTime.Now;
+        [Required]
         public string Description { get; set; }
+        [Required]
+        public decimal Amount { get; set; }
     }
 }

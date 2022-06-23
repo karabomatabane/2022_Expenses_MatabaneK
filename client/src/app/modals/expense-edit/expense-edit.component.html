@@ -1,0 +1,17 @@
+<form #editForm="ngForm" *ngIf="expense" class="mt-4" (ngSubmit)="updateExpense()">
+    <div class="alert alert-info mb-4" *ngIf="editForm.dirty">
+        <strong>Information</strong> You have made changes. Any unsaved changes will be lost.
+    </div>
+    <h4>Date</h4>
+    <textarea class="form-control" [ngModel]="expense.date" (ngModelChange)="expense.date=$event" name="date"
+        rows="6"></textarea>
+    <h4 class="mt-2">Description</h4>
+    <textarea class="form-control" [(ngModel)]="expense.description" name="description" rows="6"></textarea>
+    <h4 class="mt-2">Amount</h4>
+    <textarea class="form-control" [(ngModel)]="expense.amount" name="amount" rows="6"></textarea>
+    <div class="form-group text-center mt-4">
+        <a type="button" class="btn btn-default me-4" routerLink="/expenses/{{expense.id}}">Back</a>
+        <button [disabled]="!editForm.dirty" type="button" class="btn btn-success" (click)="updateExpense()">Save
+            changes</button>
+    </div>
+</form>

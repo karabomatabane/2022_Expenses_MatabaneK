@@ -1,1 +1,15 @@
-<p>expense-list works!</p>
+<div class="container">
+    <h2>Your Expenses</h2>
+    <button (click)="openAddModal()" class="btn btn-primary" style="margin: 10px;">Add new</button>
+    <div class="card mb-4" *ngFor="let expense of expenses; let i = index">
+      <div class="card-body">
+        <h5 class="card-header mb-1">Expense {{i + 1}}</h5>
+        <p class="card-text mt-4">{{expense.description}}</p>
+        <p class="card-text text-primary">{{expense.amount | currency:'ZAR':'R'}} <i class="fa fa-money"></i></p>
+        <a routerLink="/expenses/{{expense.id}}" class="stretched-link"></a>
+        <a routerLink="/expenses/{{expense.id}}" class="btn btn-primary ms-3">View</a>
+        <em class="card-text text-muted date">{{expense.date | date}}</em>
+      </div>
+    </div>
+  </div>
+  

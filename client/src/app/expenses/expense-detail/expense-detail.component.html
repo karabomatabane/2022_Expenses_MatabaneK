@@ -1,1 +1,20 @@
-<p>expense-detail works!</p>
+<div class="card" *ngIf="expense != null">
+    <div class="card-body mt-4">
+        <strong>Date</strong>
+        <p>{{expense.date | date}}</p>
+    </div>
+    <div class="card-body">
+        <strong>Description</strong>
+        <p>{{expense.description}}</p>
+    </div>
+    <div class="card-body">
+        <strong>Amount</strong>
+        <p>{{expense.amount | currency:'ZAR':'R'}}</p>
+    </div>
+    <div class="card-footer">
+        <div class="btn-group d-flex">
+            <a class="btn btn-primary" routerLink="/expense/edit">Edit</a>
+            <button class="btn btn-danger">Delete</button>
+        </div>
+    </div>
+</div>
