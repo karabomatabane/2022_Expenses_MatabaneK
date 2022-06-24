@@ -1,14 +1,24 @@
-<form #editForm="ngForm" *ngIf="expense" class="mt-4" (ngSubmit)="updateExpense()">
+<form [formGroup]="editForm" *ngIf="expense" id="expenseForm" class="mt-4" (ngSubmit)="updateExpense()">
     <div class="alert alert-info mb-4" *ngIf="editForm.dirty">
         <strong>Information</strong> You have made changes. Any unsaved changes will be lost.
     </div>
-    <h4>Date</h4>
-    <textarea class="form-control" [ngModel]="expense.date" (ngModelChange)="expense.date=$event" name="date"
-        rows="6"></textarea>
-    <h4 class="mt-2">Description</h4>
-    <textarea class="form-control" [(ngModel)]="expense.description" name="description" rows="6"></textarea>
-    <h4 class="mt-2">Amount</h4>
-    <textarea class="form-control" [(ngModel)]="expense.amount" name="amount" rows="6"></textarea>
+    <div class="form-group">
+        <h4>Date</h4>
+        <app-date-input [formControl]="editForm.controls['date']" [label]="'Date'"></app-date-input>
+    </div>
+    <div class="form-group">
+        <h4 class="mt-4">Description</h4>
+        <textarea 
+            [class.is-invalid]="editForm.get('description').errors && editForm.get('description').touched"
+            class="form-control" 
+            formControlName="description" rows="6">
+        </textarea>
+        <div class="invalid-feedback">Please enter a description</div>
+    </div>
+    <div class="form-group">
+        <h4 class="mt-4">Amount</h4>
+        <app-text-input [formControl]="editForm.controls['amount']" [label]="'Amount'" [type]="'number'"></app-text-input>
+    </div>
     <div class="form-group text-center mt-4">
         <a type="button" class="btn btn-default me-4" routerLink="/expenses/{{expense.id}}">Back</a>
         <button [disabled]="!editForm.dirty" type="button" class="btn btn-success" (click)="updateExpense()">Save

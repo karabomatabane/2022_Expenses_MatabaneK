@@ -20,6 +20,9 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { ExpenseEditComponent } from './modals/expense-edit/expense-edit.component';
 import { ExpenseAddComponent } from './modals/expense-add/expense-add.component';
+import { TextInputComponent } from './_forms/text-input/text-input.component';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { DateInputComponent } from './_forms/date-input/date-input.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,8 @@ import { ExpenseAddComponent } from './modals/expense-add/expense-add.component'
     ServerErrorComponent,
     ExpenseEditComponent,
     ExpenseAddComponent,
+    TextInputComponent,
+    DateInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +52,8 @@ import { ExpenseAddComponent } from './modals/expense-add/expense-add.component'
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    DatePipe, DecimalPipe
   ],
   bootstrap: [AppComponent]
 })

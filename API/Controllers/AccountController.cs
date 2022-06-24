@@ -78,7 +78,7 @@ namespace API.Controllers
             bool uniqueEmail = await _userManager.FindByEmailAsync(email.ToLower()) == null;
             return new ValidationResponse()
             {
-                Result = !uniqueUserName || uniqueEmail,
+                Result = !uniqueUserName || !uniqueEmail,
                 Message = !uniqueUserName ? "Username is already taken" : !uniqueEmail ? "Email is already taken" : ""
             };
         }

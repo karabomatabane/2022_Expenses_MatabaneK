@@ -1,23 +1,31 @@
 <div class="modal-header">
     <h4 class="modal-title pull-left">Add a new expense.</h4>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
-      <span aria-hidden="true">&times;</span>
+    <button type="btn btn-light" class="btn btn-light pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <i class="fa fa-times-circle fa-xl" aria-hidden="true"></i>
     </button>
   </div>
   <div class="modal-body">
-    <form [formGroup]="addForm" id="expenseForm" class="mt-4" (ngSubmit)="addExpense()">
-        <h4>Date</h4>
-        <textarea class="form-control"  formControlName="date" rows="6"></textarea>
-        <h4 class="mt-2">Description</h4>
-        <textarea class="form-control" formControlName="description" rows="6"></textarea>
-        <h4 class="mt-2">Amount</h4>
-        <textarea class="form-control" formControlName="amount" rows="6"></textarea>
+    <form [formGroup]="addForm" id="expenseForm" class="mt-4" (ngSubmit)="addForm.valid && addExpense()">
+        <div class="form-group">
+            <h4>Date</h4>
+            <app-date-input [formControl]="addForm.controls['date']" [label]="'Date'"></app-date-input>
+        </div>
+        <div class="form-group">
+            <h4 class="mt-2">Description</h4>
+            <textarea 
+                [class.is-invalid]="addForm.get('description').errors && addForm.get('description').touched"
+                class="form-control" 
+                formControlName="description" rows="6">
+            </textarea>
+            <div class="invalid-feedback">Please enter a description</div>
+        </div>
+        <div class="form-group">
+            <h4 class="mt-2">Amount</h4>
+            <app-text-input [formControl]="addForm.controls['amount']" [label]="'Amount'" [type]="'number'"></app-text-input>
+        </div>
     </form>
-
-    <p>Form value:{{addForm.value | json}}</p>
-    <p>Form status:{{addForm.status | json}}</p>
   </div>
   <div class="modal-footer mt-4">
     <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
-    <button type="button" class="btn btn-success" (click)="addExpense()">Submit</button>
+    <button [disabled]="!addForm.valid" type="button" class="btn btn-success" (click)="addExpense()">Submit</button>
   </div>

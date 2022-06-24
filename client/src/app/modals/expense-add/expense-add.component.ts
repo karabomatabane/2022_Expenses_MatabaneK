@@ -1,5 +1,6 @@
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
@@ -12,31 +13,31 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
   styleUrls: ['./expense-add.component.css']
 })
 export class ExpenseAddComponent implements OnInit {
-  expense: Expense;
   addForm: FormGroup;
 
 
-  constructor(public bsModalRef: BsModalRef, private expenseService: ExpensesService, private router: Router, private toastr: ToastrService) { }
+  constructor(public bsModalRef: BsModalRef, private expenseService: ExpensesService, 
+    private fb: FormBuilder, private toastr: ToastrService, public decimalPipe: DecimalPipe, private router: Router) { }
 
   ngOnInit(): void {
     this.initialiseForm();
   }
 
   initialiseForm() {
-    this.addForm = new FormGroup({
-      date: new FormControl(),
-      description: new FormControl(),
-      amount: new FormControl()
+      this.addForm = this.fb.group({
+      date: [new Date, Validators.required],
+      description: ['', Validators.required],
+      amount: [this.decimalPipe.transform(0, '1.2-5'), [Validators.required, Validators.min(1)]]
     })
   }
 
   addExpense() {
      this.expenseService.addExpense(this.addForm.value).subscribe(response => {
       this.toastr.success('New expense added successfully');
+      this.bsModalRef.hide();
+      window.location.reload();
      }, error => {
-      this.toastr.error('Something went wrong');
+      console.log(error);
      })
-     this.bsModalRef.hide();
-     window.location.reload();
   }
 }

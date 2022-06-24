@@ -26,7 +26,12 @@ export class ExpensesService {
   }
 
   addExpense(expense: Expense) {
-    console.log(expense);
-    return this.http.post<Expense>(this.baseUrl + 'expenses', expense);
+    console.log(expense)
+    return this.http.post<Expense>(this.baseUrl + 'expenses/', expense);
+  }
+
+  deleteExpense(id: number)
+  {
+    return this.http.delete<Expense>(this.baseUrl + 'expenses/' + id);
   }
 }
