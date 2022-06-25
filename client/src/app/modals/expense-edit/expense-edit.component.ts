@@ -17,6 +17,8 @@ export class ExpenseEditComponent implements OnInit {
   expense: Expense;
   id: number;
   editForm: FormGroup;
+  formattedDate: string;
+  
   @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any){
     if(this.editForm.dirty) {
       $event.returnValue = true;
@@ -34,24 +36,27 @@ export class ExpenseEditComponent implements OnInit {
 
   initialiseForm() {
     this.editForm = this.fb.group({
-    date: [this.datePipe.transform((this.expense.date), 'yyyy-MMM-dd'), Validators.required],
+    date: [this.formattedDate, Validators.required],
     description: [this.expense.description, Validators.required],
     amount: [this.expense.amount, [Validators.required, Validators.min(1)]]
+    
   })
+  console.log("date: " + this.formattedDate)
 }
 
   loadExpense() {
     let currentExpenseId = JSON.parse(localStorage.getItem('currentExpense'))?.id;
     this.expenseService.getExpense(currentExpenseId).subscribe(expense => {
       this.expense = expense;
+      this.formattedDate = this.datePipe.transform((this.expense.date), 'dd-MMM-yyyy');
       this.initialiseForm();
     })
   }
   
   updateExpense() {
-    this.expenseService.updateExpense(this.expense.id, this.expense).subscribe(() => {
+    this.expenseService.updateExpense(this.expense.id, this.editForm.value).subscribe(() => {
       this.toastr.success('Expense updated successfully');
-      console.log(this.expense)
+      this.loadExpense();
       this.editForm.reset(this.expense)
     })    
   }

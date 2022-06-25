@@ -4,20 +4,20 @@
     </div>
     <div class="form-group">
         <h4>Date</h4>
-        <app-date-input [formControl]="editForm.controls['date']" [label]="'Date'"></app-date-input>
+        <app-date-input [formControl]="editForm.controls['date']" [ngModel]="expense.date | date: 'yyyy-mmmm'" (ngModelChanged)="expense.date=$event" [label]="'Date'"></app-date-input>
     </div>
     <div class="form-group">
         <h4 class="mt-4">Description</h4>
         <textarea 
             [class.is-invalid]="editForm.get('description').errors && editForm.get('description').touched"
             class="form-control" 
-            formControlName="description" rows="6">
+            formControlName="description" [(ngModel)]="expense.description" rows="6">
         </textarea>
         <div class="invalid-feedback">Please enter a description</div>
     </div>
     <div class="form-group">
         <h4 class="mt-4">Amount</h4>
-        <app-text-input [formControl]="editForm.controls['amount']" [label]="'Amount'" [type]="'number'"></app-text-input>
+        <app-text-input [formControl]="editForm.controls['amount']" [(ngModel)]="expense.amount" [label]="'Amount'" [type]="'number'"></app-text-input>
     </div>
     <div class="form-group text-center mt-4">
         <a type="button" class="btn btn-default me-4" routerLink="/expenses/{{expense.id}}">Back</a>

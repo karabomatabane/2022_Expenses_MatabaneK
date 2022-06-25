@@ -29,6 +29,7 @@ export class ExpensesService {
   }
 
   updateExpense(id, expense: Expense) {
+    console.log(expense);
     return this.http.put(this.baseUrl + 'expenses/' + id, expense);
   }
 
