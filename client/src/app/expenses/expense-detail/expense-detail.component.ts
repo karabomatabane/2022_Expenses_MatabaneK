@@ -18,12 +18,8 @@ export class ExpenseDetailComponent implements OnInit {
   constructor(private expenseService: ExpensesService, private route: ActivatedRoute, private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
-    this.loadExpense();
-  }
-
-  loadExpense() {
-    this.expenseService.getExpense(parseInt(this.route.snapshot.paramMap.get('id'))).subscribe(expense => {
-      this.expense = expense;
+    this.route.data.subscribe(data => {
+      this.expense = data.expense;
       localStorage.setItem('currentExpense', JSON.stringify(this.expense));
     })
   }

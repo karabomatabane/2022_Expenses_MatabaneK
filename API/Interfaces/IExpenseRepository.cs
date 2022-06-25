@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -10,10 +11,8 @@ namespace API.Interfaces
         void Delete(int id);
 
         void Add(Expense expense);
-        void UpdateDescription(int id);
-        Task<bool> SaveAllAsync();
-        Task<IEnumerable<Expense>> GetExpensesAsync();
-        Task<IEnumerable<Expense>> GetExpensesByUserAsync(string username);
+        
+        Task<PagedList<Expense>> GetExpensesByUserAsync(string username, ExpenseParams expenseParams);
         Task<Expense> GetExpenseByIdAsync(int id);
     }
 }

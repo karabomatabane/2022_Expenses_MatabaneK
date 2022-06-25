@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { ExpenseEditComponent } from './modals/expense-edit/expense-edit.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
+import { ExpenseResolverResolver } from './_resolvers/expense-resolver.resolver';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -19,7 +20,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {path: 'expenses', component: ExpenseListComponent},
-      {path: 'expenses/:id', component: ExpenseDetailComponent},
+      {path: 'expenses/:id', component: ExpenseDetailComponent, resolve: {expense: ExpenseResolverResolver}},
       {path: 'expense/edit', component: ExpenseEditComponent, canDeactivate: [PreventUnsavedChangesGuard]},
     ]
   },

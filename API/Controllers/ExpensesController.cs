@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -17,22 +18,25 @@ namespace API.Controllers
     [Authorize]
     public class ExpensesController : BaseApiController
     {
-        private readonly IExpenseRepository _expenseRepository;
         private readonly IMapper _mapper;
-        public ExpensesController(IExpenseRepository expenseRepository, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+        public ExpensesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _expenseRepository = expenseRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ExpenseDto>>> GetExpenses()
+        public async Task<ActionResult<IEnumerable<ExpenseDto>>> GetExpenses([FromQuery] ExpenseParams expenseParams)
         {
             var username = User.GetUserName();
 
-            var expenses = await _expenseRepository.GetExpensesByUserAsync(username);
+            var expenses = await _unitOfWork.ExpenseRepository.GetExpensesByUserAsync(username, expenseParams);
 
             var expensesToReturn = _mapper.Map<IEnumerable<ExpenseDto>>(expenses);
+
+            Response.AddPaginationHeader(expenses.CurrentPage, expenses.PageSize,
+                expenses.TotalCount, expenses.TotalPages);
 
             return Ok(expensesToReturn);
         }
@@ -40,7 +44,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ExpenseDto>> GetExpense(int id)
         {
-            var expense = await _expenseRepository.GetExpenseByIdAsync(id);
+            var expense = await _unitOfWork.ExpenseRepository.GetExpenseByIdAsync(id);
 
             return _mapper.Map<ExpenseDto>(expense);
         }
@@ -57,9 +61,9 @@ namespace API.Controllers
                 Amount = _expense.Amount
             };
 
-            _expenseRepository.Add(expense);
+            _unitOfWork.ExpenseRepository.Add(expense);
 
-            if (await _expenseRepository.SaveAllAsync()) return NoContent();
+            if (await _unitOfWork.Complete()) return NoContent();
 
             return BadRequest("Failed to add expense.");
 
@@ -69,44 +73,28 @@ namespace API.Controllers
         public async Task<ActionResult> Update(int id, ExpenseUpdateDto expenseUpdateDto)
         {
             var username = User.GetUserName();
-            var expense = await _expenseRepository.GetExpenseByIdAsync(id);
+            var expense = await _unitOfWork.ExpenseRepository.GetExpenseByIdAsync(id);
 
             _mapper.Map(expenseUpdateDto, expense);
 
-            _expenseRepository.Update(expense.Id);
+            _unitOfWork.ExpenseRepository.Update(expense.Id);
 
-            if (await _expenseRepository.SaveAllAsync()) return NoContent();
+            if (await _unitOfWork.Complete()) return NoContent();
 
             return BadRequest("Failed to update the expense.");
-           
+
         }
-
-        // [HttpPut("{id}")]
-        // public async Task<ActionResult> UpdateDescription(int id, string description)
-        // {
-        //     var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //     var expense = await _expenseRepository.GetExpenseByIdAsync(id);
-
-        //     expense.Description = description;
-
-        //     _expenseRepository.UpdateDescription(expense.Id);
-
-        //     if (await _expenseRepository.SaveAllAsync()) return NoContent();
-
-        //     return BadRequest("Failed to update the description.");
-           
-        // }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var expense = await _expenseRepository.GetExpenseByIdAsync(id);
+            var expense = await _unitOfWork.ExpenseRepository.GetExpenseByIdAsync(id);
 
-            _expenseRepository.Delete(expense.Id);
+            _unitOfWork.ExpenseRepository.Delete(expense.Id);
 
-            if (await _expenseRepository.SaveAllAsync()) return NoContent();
+            if (await _unitOfWork.Complete()) return NoContent();
 
-            return BadRequest("Failed to delete the expense.");           
+            return BadRequest("Failed to delete the expense.");
         }
     }
 }

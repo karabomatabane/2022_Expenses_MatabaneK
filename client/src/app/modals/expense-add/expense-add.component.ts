@@ -33,7 +33,6 @@ export class ExpenseAddComponent implements OnInit {
 
   addExpense() {
      this.expenseService.addExpense(this.addForm.value).subscribe(response => {
-      this.toastr.success('New expense added successfully');
       this.bsModalRef.hide();
       window.location.reload();
      }, error => {

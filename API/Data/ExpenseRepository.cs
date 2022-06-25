@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,19 +39,16 @@ namespace API.Data
             return await _context.Expenses.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Expense>> GetExpensesAsync()
+        public async Task<PagedList<Expense>> GetExpensesByUserAsync(string username, ExpenseParams expenseParams)
         {
-            return await _context.Expenses.ToListAsync();
-        }
+            var query = _context.Expenses.Where(e => e.UserName == username).AsNoTracking();
 
-        public async Task<IEnumerable<Expense>> GetExpensesByUserAsync(string username)
-        {
-            return await _context.Expenses.Where(e => e.UserName == username).ToListAsync();
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
+            var minDate = DateTime.Today.AddMonths(-1);
+            if (expenseParams.Filter)
+            {
+                query = query.Where(e => DateTime.Compare(e.Date, minDate) > 0);
+            }
+            return await PagedList<Expense>.CreateAsync(query, expenseParams.PageNumber, expenseParams.PageSize);
         }
 
         public void Update(int id)
@@ -59,11 +58,6 @@ namespace API.Data
             {
                 _context.Entry(expense).State = EntityState.Modified;
             }
-        }
-
-        public void UpdateDescription(int id)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
